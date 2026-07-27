@@ -124,8 +124,8 @@ function ItemDetail() {
                   const { error } = await supabase.from("claims").insert({
                     item_id: data.id,
                     claimer_id: user.id,
-                    answers: payload,
-                    note: note || null,
+                    verification_answers: payload as unknown as never,
+                    message: note || null,
                     status: allMatched ? "approved" : "pending",
                   });
                   if (error) throw error;
