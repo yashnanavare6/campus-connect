@@ -21,10 +21,10 @@ function ProfilePage() {
       <div className="rounded-2xl border bg-card p-6 shadow-[var(--shadow-soft)]">
         <div className="flex items-center gap-4">
           <div className="grid size-14 place-items-center rounded-full bg-primary-soft text-lg font-semibold text-primary">
-            {(profile?.full_name || user?.email || "?").slice(0, 1).toUpperCase()}
+            {(profile?.name || user?.email || "?").slice(0, 1).toUpperCase()}
           </div>
           <div>
-            <div className="font-semibold">{profile?.full_name || "Unnamed"}</div>
+            <div className="font-semibold">{profile?.name || "Unnamed"}</div>
             <div className="text-sm text-muted-foreground">{user?.email}</div>
           </div>
         </div>
