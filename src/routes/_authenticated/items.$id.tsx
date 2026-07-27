@@ -126,7 +126,7 @@ function ItemDetail() {
                     claimer_id: user.id,
                     answers: payload,
                     note: note || null,
-                    status: allMatched ? "verified" : "pending",
+                    status: allMatched ? "approved" : "pending",
                   });
                   if (error) throw error;
                   if (allMatched) {
