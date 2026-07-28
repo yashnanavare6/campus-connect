@@ -34,7 +34,7 @@ const signInSchema = z.object({
 
 const signUpSchema = signInSchema.extend({
   name: z.string().trim().min(2, "Enter your name").max(80),
-  role: z.enum(["student", "faculty"]),
+  role: z.enum(["student", "faculty", "driver"]),
   department: z.string().trim().max(80).optional(),
 });
 
@@ -160,11 +160,12 @@ function SignUpForm({ onDone }: { onDone: () => void }) {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label>Role</Label>
-          <Select defaultValue="student" onValueChange={(v) => setValue("role", v as "student" | "faculty")}>
+          <Select defaultValue="student" onValueChange={(v) => setValue("role", v as "student" | "faculty" | "driver")}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="student">Student</SelectItem>
               <SelectItem value="faculty">Faculty</SelectItem>
+              <SelectItem value="driver">Driver</SelectItem>
             </SelectContent>
           </Select>
         </div>

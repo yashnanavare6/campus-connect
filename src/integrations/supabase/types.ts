@@ -292,7 +292,7 @@ export type Database = {
       app_role: "admin" | "moderator" | "user"
       claim_status: "pending" | "approved" | "rejected"
       item_status: "open" | "claimed" | "recovered" | "closed"
-      user_role: "student" | "faculty"
+      user_role: "student" | "faculty" | "driver"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -423,7 +423,7 @@ export const Constants = {
       app_role: ["admin", "moderator", "user"],
       claim_status: ["pending", "approved", "rejected"],
       item_status: ["open", "claimed", "recovered", "closed"],
-      user_role: ["student", "faculty"],
+      user_role: ["student", "faculty", "driver"],
     },
   },
 } as const

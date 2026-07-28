@@ -135,7 +135,7 @@ function Features() {
     { icon: ShieldCheck, t: "College-only access", d: "Sign in with your institutional email. Every user is a verified member of the campus." },
     { icon: Search, t: "Fast search", d: "Filter by category, location, keywords, and date. Realtime, debounced, paginated." },
     { icon: Zap, t: "Instant notifications", d: "Get pinged the moment a claim is approved or a match is posted." },
-    { icon: Users, t: "Role-based control", d: "Students, faculty, and admins each get exactly the powers they need." },
+    { icon: Users, t: "Role-based control", d: "Students, faculty, drivers, and admins each get exactly the powers they need." },
     { icon: CheckCircle2, t: "Approval workflow", d: "Finders review answers, approve or reject, and only then share contact." },
   ];
   return (
@@ -210,7 +210,7 @@ function Testimonials() {
 
 function FAQ() {
   const items = [
-    { q: "Who can sign up?", a: "Anyone with a valid college email. Faculty and students both. Admins are appointed manually." },
+    { q: "Who can sign up?", a: "Anyone with a valid college email — students, faculty, and campus drivers. Admins are appointed manually." },
     { q: "Are hidden questions really hidden?", a: "Yes. Row-level security ensures only the finder and admins can view verification details and contact info." },
     { q: "What if two people try to claim the same item?", a: "Every claim is answered independently. The finder reviews answers and approves the right one." },
     { q: "Can I edit or delete my post?", a: "You can edit or remove your own posts anytime. Admins can moderate suspicious posts." },

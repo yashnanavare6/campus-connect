@@ -39,7 +39,14 @@ export function AppShell({ children }: { children: ReactNode }) {
         {isAdmin && <NavItem to="/admin" label="Admin" icon={ShieldAlert} onClick={() => setOpen(false)} />}
       </nav>
       <div className="border-t p-3">
-        <div className="mb-2 truncate px-2 text-xs text-muted-foreground">{profile?.email}</div>
+        <div className="mb-1 truncate px-2 text-xs text-muted-foreground">{profile?.email}</div>
+        {profile?.role && (
+          <div className="mb-2 px-2">
+            <span className="inline-flex rounded-full bg-primary-soft px-2 py-0.5 text-xs font-medium capitalize text-primary">
+              {profile.role}
+            </span>
+          </div>
+        )}
         <SignOut />
       </div>
     </div>
