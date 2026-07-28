@@ -90,6 +90,8 @@ function ItemDetail() {
             </ol>
           </div>
         )}
+
+        {canSeeHidden && <ClaimsList itemId={data.id} />}
       </div>
 
       <aside className="md:col-span-2">
