@@ -153,3 +153,86 @@ function ItemDetail() {
     </div>
   );
 }
+
+type ClaimRow = {
+  id: string;
+  claimer_id: string;
+  status: string;
+  message: string | null;
+  created_at: string;
+  verification_answers: { question: string; submitted: string; matched: boolean }[];
+  profiles: { name: string | null; email: string | null; department: string | null } | null;
+};
+
+function ClaimsList({ itemId }: { itemId: string }) {
+  const qc = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ["claims", itemId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("claims")
+        .select("id, claimer_id, status, message, created_at, verification_answers, profiles:profiles!claims_claimer_id_fkey(name, email, department)")
+        .eq("item_id", itemId)
+        .order("created_at", { ascending: false });
+      if (error) {
+        // fallback without explicit fkey name
+        const alt = await supabase.from("claims").select("*").eq("item_id", itemId).order("created_at", { ascending: false });
+        const claims = alt.data ?? [];
+        const ids = Array.from(new Set(claims.map((c) => c.claimer_id)));
+        const profs = ids.length ? (await supabase.from("profiles").select("id, name, email, department").in("id", ids)).data ?? [] : [];
+        return claims.map((c) => ({ ...c, profiles: profs.find((p) => p.id === c.claimer_id) ?? null })) as unknown as ClaimRow[];
+      }
+      return data as unknown as ClaimRow[];
+    },
+  });
+
+  const setStatus = async (id: string, status: "approved" | "rejected") => {
+    const { error } = await supabase.from("claims").update({ status, reviewed_at: new Date().toISOString() }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(`Claim ${status}`);
+    qc.invalidateQueries({ queryKey: ["claims", itemId] });
+  };
+
+  if (isLoading) return <div className="text-sm text-muted-foreground">Loading claims…</div>;
+  if (!data || data.length === 0) return (
+    <div className="rounded-2xl border bg-card p-5 text-sm text-muted-foreground">No claims yet.</div>
+  );
+
+  return (
+    <div className="rounded-2xl border bg-card p-5">
+      <h2 className="mb-3 font-semibold">Claims ({data.length})</h2>
+      <ul className="space-y-4">
+        {data.map((c) => (
+          <li key={c.id} className="rounded-xl border bg-background p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div className="font-medium">{c.profiles?.name ?? "Unknown user"}</div>
+                <div className="text-xs text-muted-foreground">
+                  {c.profiles?.email ?? "no email"}{c.profiles?.department ? ` · ${c.profiles.department}` : ""}
+                </div>
+              </div>
+              <span className={`rounded-full px-2 py-0.5 text-xs capitalize ${c.status === "approved" ? "bg-success/15 text-success" : c.status === "rejected" ? "bg-destructive/15 text-destructive" : "bg-accent"}`}>{c.status}</span>
+            </div>
+            {c.message && <p className="mt-2 text-sm"><span className="text-muted-foreground">Note:</span> {c.message}</p>}
+            {Array.isArray(c.verification_answers) && c.verification_answers.length > 0 && (
+              <ol className="mt-2 space-y-1 text-sm">
+                {c.verification_answers.map((a, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    {a.matched ? <CheckCircle2 className="mt-0.5 size-4 text-success" /> : <XCircle className="mt-0.5 size-4 text-destructive" />}
+                    <div><span className="text-muted-foreground">{a.question}</span> — {a.submitted || <em className="text-muted-foreground">no answer</em>}</div>
+                  </li>
+                ))}
+              </ol>
+            )}
+            {c.status === "pending" && (
+              <div className="mt-3 flex gap-2">
+                <Button size="sm" onClick={() => setStatus(c.id, "approved")}>Approve & share contact</Button>
+                <Button size="sm" variant="outline" onClick={() => setStatus(c.id, "rejected")}>Reject</Button>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
